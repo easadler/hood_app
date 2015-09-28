@@ -19,7 +19,7 @@ df = pd.read_csv('app/static/csv/final.csv')
 
 mask = (df.dtypes == np.float64) | (df.dtypes == np.int)
 df_sub = df.ix[:, mask]
-df_sub = df_sub.dropna(axis = 1, how = 'all')
+df_sub = df_sub.dropna(axis = 1, thresh = 10)
 ids = df_sub.id
 df_sub = df_sub.drop(['latitude', 'longitude', 'id'], axis = 1)
 

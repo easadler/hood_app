@@ -76,6 +76,7 @@
           .data(collection.features)
         .enter().append("path")
         .attr("fill", function(d) { return c10(rateById.get(d.properties.REGIONID)); })
+        .attr('class', function(d) { return d.properties.NAME;})
 
     map.on("viewreset", reset);
     reset();
