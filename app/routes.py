@@ -19,6 +19,7 @@ df = pd.read_csv('app/static/csv/final.csv')
 
 mask = (df.dtypes == np.float64) | (df.dtypes == np.int)
 df_sub = df.ix[:, mask]
+df_sub = df_sub.fillna(0)
 df_sub = df_sub.dropna(axis = 1, thresh = 10)
 ids = df_sub.id
 df_sub = df_sub.drop(['latitude', 'longitude', 'id'], axis = 1)
@@ -37,9 +38,14 @@ data.to_csv('app/static/csv/clusters.csv', index = False)
 def handle_message(message):
     print message['data']
 
+@socketio.on('cluster')
+def handle_message(message):
+    print message['data']
+
+    
 @app.route('/')
 def index():
 
 
-	return render_template('home.html')
+	return render_template('home.html', data=['transit_score', 'nightlife', 'violent' ,'Affordability Data: Median List Price Per Sq Ft'])
 
