@@ -38,11 +38,12 @@ def handle_message(message):
 def handle_message(message):
 
 	cols = list(message['data'])
+	X_changed = X_centered.copy()
+
 	inds = []
 	for col in cols:
 		inds.append(df_sub.columns.get_loc(col))
 	
-	X_changed = X_centered.copy()
 	for i in inds:
 		X_changed[:,i] *= 1000
 
