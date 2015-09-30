@@ -28,54 +28,64 @@
 
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
 <script type="text/javascript" charset="utf-8">
+
     var socket = io.connect('http://' + document.domain + ':' + location.port);
     socket.on('connect', function() {
         socket.emit('my event', {data: 'I\'m connected!'});
     });
+    socket.on('new clusters', function(new_data){
+      newData(new_data)
+    })
 </script>
 
 
 <!-- render map -->
 <script type="text/javascript">
+
   var map = L.map('map').setView([47.6097, -122.3331], 11);
-  L.tileLayer('https://api.tiles.mapbox.com/v4/mapbox.high-contrast/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6IjZjNmRjNzk3ZmE2MTcwOTEwMGY0MzU3YjUzOWFmNWZhIn0.Y8bhBaUMqFiPrDRW9hieoQ', {
-        maxZoom: 18,
-        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-          '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-          'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-        id: 'mapbox.streets'
-      }).addTo(map);
+    L.tileLayer('https://api.tiles.mapbox.com/v4/mapbox.high-contrast/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6IjZjNmRjNzk3ZmE2MTcwOTEwMGY0MzU3YjUzOWFmNWZhIn0.Y8bhBaUMqFiPrDRW9hieoQ', {
+          maxZoom: 18,
+          attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+            '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+            'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+          id: 'mapbox.streets'
+        }).addTo(map);
 
+    var svg = d3.select(map.getPanes().overlayPane).append("svg"),
+        g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
-  var svg = d3.select(map.getPanes().overlayPane).append("svg"),
-      g = svg.append("g").attr("class", "leaflet-zoom-hide");
+    var c10 = d3.scale.category10();
 
+    var map_data = {{ map_data|tojson|safe }}
 
-  var rateById = d3.map();
+var feature;
+var newData = function(cluster_data){
+  var rateById = cluster_data;
+  d3.selectAll("path[id]") 
+      .attr("fill", function(d){return c10(rateById[d3.select(this).attr("id")])});
+  }
+
+var plotData = function(cluster_data){
+    console.log(cluster_data)
+    var rateById = cluster_data;
 
   // var quantize = d3.scale.quantize()
   //     .domain([0, 2140]) //2140 257
   //     .range(d3.range(9).map(function(i) { return "q" + i + "-9"; }));
 
-  var c10 = d3.scale.category10();
+  d3.json("{{url_for('static', filename='json/seattle.json')}}", function(error, collection){
+      var transform = d3.geo.transform({point: projectPoint}),
+          path = d3.geo.path().projection(transform);
 
-  queue()
-      .defer(d3.json, "{{url_for('static', filename='json/seattle.json')}}")
-      .defer(d3.csv, "{{url_for('static', filename='csv/clusters.csv')}}", function(d) { rateById.set(+d.id, +d.cluster); })
-      .await(ready);
-
-
-  function ready(error, collection){
-    if (error) throw error;
-    
-    var transform = d3.geo.transform({point: projectPoint}),
-        path = d3.geo.path().projection(transform);
-
-    var feature = g.selectAll("path")
-          .data(collection.features)
-        .enter().append("path")
-        .attr("fill", function(d) { return c10(rateById.get(d.properties.REGIONID)); })
+      var feature = g.selectAll("path")
+            .data(collection.features)
+      feature.enter().append("path")
+        .attr("fill", function(d) { return c10(rateById[d.properties.REGIONID]); })
         .attr('class', function(d) { return d.properties.NAME;})
+        .attr('id', function(d){ return d.properties.REGIONID;})
+
+      feature.exit().remove()
+
 
     map.on("viewreset", reset);
     reset();
@@ -101,5 +111,8 @@
       var point = map.latLngToLayerPoint(new L.LatLng(y, x));
       this.stream.point(point.x, point.y);
     }
-  }
+
+  })
+
+}
 </script>

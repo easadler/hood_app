@@ -1,7 +1,7 @@
 $(document).ready(function(){
-
+  plotData(map_data)
   var timer;
-  var delay = 3000; // 0.6 seconds delay after last input
+  var delay = 0; // 0.6 seconds delay after last input
 
   $('#important_features').change(function(){
     console.log('here')
@@ -16,17 +16,16 @@ $(document).ready(function(){
   $('#example-1-3 .sortable-list').sortable({
     connectWith: '#example-1-3 .sortable-list',
     placeholder: 'placeholder',
-  });
-  $('#important_features').sortable({
-    change: function(event, ui){
+    update: function(event, ui){
+          var arr = [];
+            $("ul#important_features li").each(function() { arr.push($(this).text()) });
+          
          window.clearTimeout(timer);
-      timer = window.setTimeout(function(){
-        socket.emit('cluster', {data: 'Time to cluster!'});
-      }, delay);
+        timer = window.setTimeout(function(){
 
-    }
-
-  })
+          socket.emit('cluster', {data: arr});
+        }, delay)}
+  });
 
   // // Example 1.4: Sortable and connectable lists (within containment)
   // $('#example-1-4 .sortable-list').sortable({
