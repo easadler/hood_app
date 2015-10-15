@@ -1,3 +1,15 @@
+.slider {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  width: 200px;
+
+}
+.handle {
+  width: 150px;
+  margin-left: -68px;
+  text-align: center;
+}
+
 .left {float: left;}
 .right {float: right;}
 
@@ -19,7 +31,7 @@
 
 .column {
   margin-left: 2%;
-  width: 32%;
+  width: 25%;
 }
 .column.first {margin-left: 0;}
 
@@ -39,8 +51,8 @@
   cursor: move;
   display: block;
   font-weight: bold;
-  margin-bottom: 5px;
-  padding: 20px 0;
+  margin-bottom: 1px;
+  padding: 1px 0;
   text-align: center;
 }
 
@@ -48,7 +60,7 @@
 
 #containment {
   background-color: #FFA;
-  height: 230px;
+  height: 100px;
 }
 
 

@@ -15,14 +15,16 @@ from sklearn.decomposition import PCA
 from sklearn import preprocessing
 from sklearn.cluster import KMeans
 
-df = pd.read_csv('app/static/csv/final.csv')
+df = pd.read_csv('app/static/csv/final_1.csv')
 
+ids = df.id.values
+names = df.hood
+df.drop(['id'], axis = 1, inplace = True)
 mask = (df.dtypes == np.float64) | (df.dtypes == np.int)
 df_sub = df.ix[:, mask]
-df_sub = df_sub.fillna(0)
-df_sub = df_sub.dropna(axis = 1, thresh = 10)
-ids = df_sub.id.values
-df_sub = df_sub.drop(['latitude', 'longitude', 'id'], axis = 1)
+
+columns = df_sub.columns.values
+
 
 imp = preprocessing.Imputer(axis=0)
 X = imp.fit_transform(df_sub)
@@ -62,5 +64,5 @@ def index():
 
 	data = pd.DataFrame({'id': ids,'cluster': clusters})
 	map_data = dict(zip(ids.tolist(), clusters.tolist()))
-	return render_template('home.html', data=['transit_score', 'nightlife', 'violent' ,'Affordability Data: Median List Price Per Sq Ft'], map_data = map_data)
+	return render_template('home.html', data= columns, map_data = map_data)
 

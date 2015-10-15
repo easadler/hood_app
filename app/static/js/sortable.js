@@ -1,4 +1,13 @@
 $(document).ready(function(){
+
+  $(function(){
+    $( ".slider" ).slider({max: 1, min: -1,slide: function(event, ui) {
+      console.log(ui.value);
+    }, step: 0.01 });
+    // $('.ui-slider-handle').css({width:150,'text-align': 'center', height: 23});
+
+})
+
   plotData(map_data)
   var timer;
   var delay = 0; // 0.6 seconds delay after last input
