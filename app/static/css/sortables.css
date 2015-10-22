@@ -1,13 +1,15 @@
 .slider {
   margin-top: 20px;
   margin-bottom: 20px;
-  width: 200px;
+  width: 150px;
 
 }
 .handle {
   width: 150px;
   margin-left: -68px;
   text-align: center;
+  background-color: gray;
+  z-index: 100;
 }
 
 .left {float: left;}

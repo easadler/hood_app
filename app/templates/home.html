@@ -80,9 +80,9 @@ var plotData = function(cluster_data){
             .data(collection.features)
             
       feature.enter().append("path")
-        .attr("fill", function(d) { return c10(rateById[d.properties.REGIONID]); })
+        .attr("fill", function(d) { return c10(rateById[d.properties.NAME]); })
         .attr('class', function(d) { return d.properties.NAME;})
-        .attr('id', function(d){ return d.properties.REGIONID;})
+        .attr('id', function(d){ return d.properties.NAME;})
 
       feature.exit().remove()
 

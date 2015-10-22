@@ -12,33 +12,44 @@
     </div>
     <div class="col-lg-7">
       <div class="dhe-example-section" id="ex-1-3">
-          <div class="dhe-example-section-header">
+          <!-- <div class="dhe-example-section-header">
             <h3 class="dhe-h3 dhe-example-title">Example 1.3: Sortable and connectable lists with visual helper</h3>
             <div class="dhe-example-description">Drag and drop items within and between lists. A visual helper is displayed indicating where the item will be positioned if dropped.</div>
-          </div>
+          </div> -->
           <div class="dhe-example-section-content">
 
             <div id="example-1-3">
 
-              <!-- <div class="column left first"> -->
+              <div class="column left first">
 
                 <!-- <ul class="sortable-list"> -->
-                  {% for x in data %}
+                  {% for x in data[:6] %}
                  <!-- <li class="sortable-item">{{x}}</li> -->
 
-
-                 <div class="slider" id='murder'><span class="ui-slider-handle ui-state-default ui-corner-all" ><div class = 'handle'>{{x}}</div></span></div>
+                 {{x}}
+                 <div class="slider" id='murder'></div>
                   <script type="text/javascript"></script>
                   {% endfor %}
+            </div>
+                  <div class="column left second">
+
+                <!-- <ul class="sortable-list"> -->
+                  {% for x in data[6:] %}
+                 <!-- <li class="sortable-item">{{x}}</li> -->
+
+                 {{x}}
+                 <div class="slider" id='murder'></div>
+                  <script type="text/javascript"></script>
+                  {% endfor %}
+
                 <!-- </ul> -->
               <!-- </div> -->
-
+<!-- 
               <div class="column left">
                 <ul class="sortable-list" id='important_features'>
                 </ul>
 
-               </div>
-
+               </div> -->
 <!--               <div class="column left">
                 <ul class="sortable-list">
                   <li class="sortable-item">Sortable item E</li>

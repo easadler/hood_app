@@ -17,9 +17,9 @@ from sklearn.cluster import KMeans
 
 df = pd.read_csv('app/static/csv/final_1.csv')
 
-ids = df.id.values
+ids = df.hood.values
 names = df.hood
-df.drop(['id'], axis = 1, inplace = True)
+#df.drop(['id'], axis = 1, inplace = True)
 mask = (df.dtypes == np.float64) | (df.dtypes == np.int)
 df_sub = df.ix[:, mask]
 
@@ -64,5 +64,6 @@ def index():
 
 	data = pd.DataFrame({'id': ids,'cluster': clusters})
 	map_data = dict(zip(ids.tolist(), clusters.tolist()))
+	print map_data
 	return render_template('home.html', data= columns, map_data = map_data)
 
