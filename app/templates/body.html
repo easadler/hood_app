@@ -20,47 +20,105 @@
 
             <div id="example-1-3">
 
-              <div class="column left first">
+            <div class="container">
+    <div class="btn-group col-xs-12" data-toggle="buttons">
+                        {% for x in data[:3] %}
 
-                <!-- <ul class="sortable-list"> -->
-                  {% for x in data[:6] %}
-                 <!-- <li class="sortable-item">{{x}}</li> -->
+        <label class="btn btn-default">
+            <input type="checkbox" name="fruit" value="{{x}}">{{x}}</input>
 
-                 {{x}}
-                 <div class="slider" id='murder'></div>
-                  <script type="text/javascript"></script>
-                  {% endfor %}
-            </div>
-                  <div class="column left second">
-
-                <!-- <ul class="sortable-list"> -->
-                  {% for x in data[6:] %}
-                 <!-- <li class="sortable-item">{{x}}</li> -->
-
-                 {{x}}
-                 <div class="slider" id='murder'></div>
-                  <script type="text/javascript"></script>
+        </label>
                   {% endfor %}
 
-                <!-- </ul> -->
-              <!-- </div> -->
-<!-- 
-              <div class="column left">
-                <ul class="sortable-list" id='important_features'>
-                </ul>
+    </div>
+</div>
+            <div class="container">
+    <div class="btn-group col-xs-12" data-toggle="buttons">
+                        {% for x in data[3:5] %}
 
-               </div> -->
-<!--               <div class="column left">
-                <ul class="sortable-list">
-                  <li class="sortable-item">Sortable item E</li>
-                </ul>
-              </div>
- -->
+        <label class="btn btn-default">
+            <input type="checkbox" name="fruit" value="{{x}}">{{x}}</input>
+        </label>
+                  {% endfor %}
+
+    </div>
+</div>
+            <div class="container">
+    <div class="btn-group col-xs-12" data-toggle="buttons">
+                        {% for x in data[5:8] %}
+
+        <label class="btn btn-default">
+            <input type="checkbox" name="fruit"  value="{{x}}">{{x}}</input>
+        </label>
+                  {% endfor %}
+
+    </div>
+</div>
+
+            <div class="container">
+    <div class="btn-group col-xs-12" data-toggle="buttons">
+                        {% for x in data[8:] %}
+
+        <label class="btn btn-default">
+            <input type="checkbox" name="fruit" value='{{x}}'>{{x}}</input>
+
+        </label>
+                  {% endfor %}
+
+    </div>
+</div>
+             
             <div class="clearer">&nbsp;</div>
 
+
+{% for x in data %}
+
+<!-- <div id='slider_{{x}}' class = 'sliders' style='display:none'></div> -->
+<div class="slider"  id='{{x}}' style='display:none'></div>
+
+<script type="text/javascript">
+
+// var s1 = slider()
+// d3.select("#slider_{{x}}").append("svg").call(s1)
+// </script>
+                  {% endfor %}
+
+<!-- 
+// Render the slider in the div
+
+// var handleClick = function(){
+//   var range = d3.scale.linear().domain([-1, 1]).range([0, 150])
+
+// var val = document.getElementById("myVal").value
+// var rect = d3.select('#slider').select(".d3slider-rect-value").attr('width')
+// console.log(rect)
+
+// if(val > (range.invert(rect) - .1) & val < (range.invert(rect) + .1) ){
+//       d3.select('#slider').select('.boob').remove()
+
+//   d3.select('#slider').select(".dragger-outer").style('fill', 'green')
+
+// } else {
+//     d3.select('#slider').select('.boob').remove()
+
+//   d3.select('#slider').select('svg').select('g').append('rect')
+//     .attr('width', 4)
+//     .attr('height', 12)
+//     .attr('class', 'boob')
+//     .style('fill', 'red')
+//     .attr("transform", function(d) {
+//         return "translate("+ range(val) +",0)";
+//       });
+//       d3.select('#slider').select(".dragger-outer").style('fill', '#ddd')
+
+
+// }
+// } -->
+</script>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+

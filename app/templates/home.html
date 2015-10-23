@@ -18,9 +18,11 @@
 <script src="{{ url_for('static', filename='js/d3_map.js') }}"></script>
 <script src="{{ url_for('static', filename='js/sortable.js') }}"></script>
 
+<script src="{{ url_for('static', filename='js/d3.slider.js') }}"></script>
+
 <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/d3_map.css')}}">
 <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/sortables.css')}}">
-
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/d3.slider.css')}}">
 </head>
 <body>
 {% include 'header.html' %}
@@ -33,8 +35,8 @@
     socket.on('connect', function() {
         socket.emit('my event', {data: 'I\'m connected!'});
     });
-    socket.on('new clusters', function(new_data){
-      newData(new_data)
+    socket.on('new clusters', function(new_data, color_values){
+      newData(new_data, color_values)
     })
 </script>
 
@@ -54,15 +56,25 @@
     var svg = d3.select(map.getPanes().overlayPane).append("svg"),
         g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
-    var c10 = d3.scale.category10();
+   var color = d3.scale.threshold()
+    .domain([.5, .3, .1, .04, 0])
+    .range(["#f2f0f7", "#dadaeb", "#bcbddc", "#9e9ac8", "#756bb1", "#54278f"]);
 
     var map_data = {{ map_data|tojson|safe }}
 
 var feature;
-var newData = function(cluster_data){
+var newData = function(cluster_data, color_values){
+
+    var color = d3.scale.threshold()
+      .domain(color_values)
+      .range(['rgb(247,251,255)', 'rgb(222,235,247)', 'rgb(198,219,239)', 'rgb(158,202,225)', 'rgb(107,174,214)','rgb(66,146,198)', 'rgb(33,113,181)', 'rgb(8,81,156)', 'rgb(8,48,107)']);
+
+
+
+
   var rateById = cluster_data;
   d3.selectAll("path[id]") 
-      .attr("fill", function(d){return c10(rateById[d3.select(this).attr("id")])});
+      .attr("fill", function(d){return color(rateById[d3.select(this).attr("id")])});
   }
 
 var plotData = function(cluster_data){
@@ -80,7 +92,7 @@ var plotData = function(cluster_data){
             .data(collection.features)
             
       feature.enter().append("path")
-        .attr("fill", function(d) { return c10(rateById[d.properties.NAME]); })
+        .attr("fill", function(d) { return color(rateById[d.properties.NAME]); })
         .attr('class', function(d) { return d.properties.NAME;})
         .attr('id', function(d){ return d.properties.NAME;})
 

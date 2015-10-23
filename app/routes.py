@@ -1,7 +1,7 @@
 from flask import render_template
 from app import app, socketio
 from flask.ext.socketio import send, emit
-
+from scipy.spatial.distance import euclidean
 
 # data science
 import json
@@ -16,9 +16,10 @@ from sklearn import preprocessing
 from sklearn.cluster import KMeans
 
 df = pd.read_csv('app/static/csv/final_1.csv')
-
+df = df.fillna(0)
 ids = df.hood.values
 names = df.hood
+
 #df.drop(['id'], axis = 1, inplace = True)
 mask = (df.dtypes == np.float64) | (df.dtypes == np.int)
 df_sub = df.ix[:, mask]
@@ -38,32 +39,51 @@ def handle_message(message):
 
 @socketio.on('cluster')
 def handle_message(message):
-
-	cols = list(message['data'])
-	X_changed = X_centered.copy()
-
-	inds = []
-	for col in cols:
-		inds.append(df_sub.columns.get_loc(col))
+	cols = list(message['data'].keys())
 	
-	for i in inds:
-		X_changed[:,i] *= 1000
+	x = message['data']
 
-	clt = KMeans(n_clusters = 8)
-	clusters = clt.fit_predict(X_changed)
+	df_cos = df_sub[cols].append(x, ignore_index = True)
 
-	map_data = dict(zip(ids.tolist(), clusters.tolist()))
 
-	emit('new clusters',  map_data)
+	X = df_cos.values
+
+	user_array = X[-1]
+	hood_matrix = X[:-1]
+
+	max_array = hood_matrix.max(axis = 1)
+	min_array = hood_matrix.min(axis = 1)
+
+	def translate(user_value, col_min, col_max):
+		NewRange = col_max - col_min
+		return (((user_value - (-1)) * NewRange) / 2) + col_min	
+
+	user_array = [translate(x,y,z) for x,y,z in zip(user_array,min_array, max_array)]
+
+	if len(cols) == 1:
+		cs_array = np.apply_along_axis(lambda x: abs(x[0] - user_array[0]), 1, hood_matrix)
+	else:
+		cs_array = np.apply_along_axis(lambda x: euclidean(x, user_array), 1, hood_matrix)
+
+	print cs_array
+	max_val, min_val = max(cs_array), min(cs_array)
+	color_values = np.linspace(min_val, max_val, 10)
+
+	map_data = dict(zip(ids, cs_array))
+	emit('new clusters',  map_data, color_values.tolist())
 
 
 @app.route('/')
 def index():
 
-	clusters = clt.fit_predict(X_centered)
+	# clusters = clt.fit_predict(X_centered)
 
-	data = pd.DataFrame({'id': ids,'cluster': clusters})
-	map_data = dict(zip(ids.tolist(), clusters.tolist()))
-	print map_data
+	# data = pd.DataFrame({'id': ids,'cluster': clusters})
+	# map_data = dict(zip(ids.tolist(), clusters.tolist()))
+	
+	map_data = dict(zip(ids.tolist(), [0]*len(ids)))
+
+	
+
 	return render_template('home.html', data= columns, map_data = map_data)
 
